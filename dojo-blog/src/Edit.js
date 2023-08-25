@@ -1,30 +1,44 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import useFetch from './useFetch'
 import { useHistory } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 const EditBlog = () => {
-  const [body, setBody] = useState('')
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
 
-  const history = useHistory()
+  //const id = searchParams.get('id')
+  const title = searchParams.get('title')
+  const body = searchParams.get('body')
+  const author = searchParams.get('author')
 
   const { id } = useParams()
 
-  const {
-    data: blog,
-    error,
-    isPending,
-  } = useFetch('http://localhost:8000/blogs/' + id)
+  console.log('EditBlog - title' + title)
+  console.log(
+    `EditBlog - /edit/${id}/title/${title}/body/${body}/author/${author}`
+  )
+
+  const blog = {
+    title: title,
+    body: body,
+    author: author,
+    id: id,
+  }
+
+  const [blogText, setBlogText] = useState(body)
+
+  const history = useHistory()
 
   const handleOnChange = (e) => {
-    setBody(e.target.value)
+    setBlogText(e.target.value)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    blog.body = body
-    console.log('handleSubmit, blog=' + blog)
+    blog.body = blogText
+    console.log('handleSubmit, blog=' + blogText)
 
     fetch('http://localhost:8000/blogs/' + id, {
       method: 'PATCH',
@@ -35,7 +49,7 @@ const EditBlog = () => {
     })
   }
 
-  const isButtonDisabled = body.trim() === '' // Disable button if body is empty or only whitespace
+  const isButtonDisabled = blogText.trim() === ''
 
   return (
     <div className='create'>

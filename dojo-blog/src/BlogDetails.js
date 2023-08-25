@@ -3,11 +3,13 @@ import useFetch from './useFetch'
 
 const BlogDetails = () => {
   const { id } = useParams()
+
   const {
     data: blog,
     error,
     isPending,
   } = useFetch('http://localhost:8000/blogs/' + id)
+
   const history = useHistory()
 
   const handleDelete = () => {
@@ -19,8 +21,14 @@ const BlogDetails = () => {
   }
 
   const handleEdit = () => {
-    console.log('edit')
-    history.push('/edit/' + blog.id)
+    console.log('edit **************')
+    console.log(
+      `/edit/${blog.id}/title/${blog.title}/body/${blog.body}/author/${blog.author}`
+    )
+
+    history.push(
+      `/edit/${blog.id}?title=${blog.title}&body=${blog.body}&author=${blog.author}`
+    )
   }
 
   return (
